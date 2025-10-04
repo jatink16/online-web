@@ -4,12 +4,9 @@ import './App.css';
 import { getWeatherData } from './api/weatherService';
 import SearchBar from './components/SearchBar';
 import CurrentWeather from './components/CurrentWeather';
-import Forecast from './components/Forecast';
 
 function App() {
-  const [city, setCity] = useState('');
   const [weatherData, setWeatherData] = useState(null);
-  const [forecastData, setForecastData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -17,12 +14,9 @@ function App() {
     setLoading(true);
     setError(null);
     setWeatherData(null);
-    setForecastData(null);
     try {
-      const { weather, forecast } = await getWeatherData(searchCity);
-      setWeatherData(weather);
-      setForecastData(forecast);
-      setCity(searchCity);
+      const data = await getWeatherData(searchCity);
+      setWeatherData(data);
     } catch (err) {
       setError('Could not fetch weather data. Please check the city name.');
     } finally {
@@ -39,14 +33,7 @@ function App() {
       <main>
         {loading && <p className="loading-message">Loading...</p>}
         {error && <p className="error-message">{error}</p>}
-        
-        {/* We only show the weather components if we have data */}
-        {weatherData && forecastData && (
-          <>
-            <CurrentWeather data={weatherData} />
-            <Forecast data={forecastData} />
-          </>
-        )}
+        {weatherData && <CurrentWeather data={weatherData} />}
       </main>
     </div>
   );
